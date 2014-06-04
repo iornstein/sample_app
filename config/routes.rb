@@ -1,5 +1,5 @@
 SampleApp::Application.routes.draw do
-  resources :users
+  resources :users #this makes paths for show new create edit destroy... maybe look up later
   resources :sessions, only: [:new, :create, :destroy]
   root 'static_pages#home'
   match '/help',    to: 'static_pages#help',    via: 'get'
