@@ -1,7 +1,8 @@
 class UsersController < ApplicationController
-  before_action :signed_in_user, only: [:index, :edit, :update]
+  before_action :signed_in_user, only: [:index, :edit, :update, :destroy]
   before_action :correct_user,   only: [:edit, :update]
-
+  before_action :admin_user,     only: :destroy
+  
   def index
     @users = User.paginate(page: params[:page])  end
 
@@ -14,7 +15,7 @@ class UsersController < ApplicationController
   end
  
   def edit
-    @user = User.find(params[:id]) #this line must have to go
+    #@user = User.find(params[:id]) #this line must have to go
   end
 
   def update
@@ -36,6 +37,13 @@ class UsersController < ApplicationController
       render 'new'
     end
   end
+
+  def destroy
+    User.find(params[:id]).destroy
+    flash[:success] = "User deleted."
+    redirect_to users_url
+  end
+
   private
 
 
@@ -44,7 +52,9 @@ class UsersController < ApplicationController
                                    :password_confirmation)
     end
 
-    # Before Filters
+    def admin_user
+      redirect_to(root_url) unless current_user.admin?
+    end
 
     def signed_in_user
       redirect_to signin_url, notice: "Please sign in." unless signed_in?
