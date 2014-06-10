@@ -18,7 +18,7 @@ describe User do
   it { should respond_to(:admin) } # to make admin users
   it { should respond_to(:remember_token) }
   it { should respond_to(:microposts) }
-
+  it { should respond_to(:feed) }
   it { should_not be_admin }
   it { should be_valid }
   
@@ -138,7 +138,15 @@ end
       end
     end
     
+    describe "status" do
+      let(:unfollowed_post) do
+        FactoryGirl.create(:micropost, user: FactoryGirl.create(:user))
+      end
 
+      its(:feed) { should include(newer_micropost) }
+      its(:feed) { should include(older_micropost) }
+      its(:feed) { should_not include(unfollowed_post) }
+    end
 
   end
 
